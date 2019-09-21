@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.StockMapper">
+  <select id="selectAll" resultType="Stock">
+    select * from `stock` where 1=1
+    <if test="stock_id != null">
+    	and stock_id = #{stock_id}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  
+  <select id="count" resultType="int" parameterType="Stock">
+    select count(*) from `stock` where 1=1
+    <if test="stock_id != null">
+    	and stock_id = #{stock_id}
+    </if>
+  </select>
+  
+  <insert id="addUser" parameterType="Stock">
+  	insert into `stock`
+  		(stock_id,stock_name,stock_type,stock_specifications,stock_number,stock_actual_number,stock_price,stock_company,stock_describe,relation_id)
+  	 values 
+  	 	(#{stock_id },#{stock_name },#{stock_type },#{stock_specifications },#{stock_number },#{stock_actual_number },#{stock_price },#{stock_company },#{stock_describe },#{relation_id })
+  </insert>
+  <update id="updateExport" parameterType="Stock" >
+	update `stock`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="stock_number != null">stock_number=stock_number-#{stock_number},</if>
+		<if test="stock_actual_number != null">stock_actual_number=stock_actual_number-#{stock_actual_number},</if>
+	</trim>
+	 where stock_name=#{stock_name}
+  </update>
+  <update id="updateInventory" parameterType="Stock" >
+	update `stock`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="stock_number != null">stock_number=#{stock_number}</if>
+	</trim>
+	 where stock_name=#{stock_name}
+  </update>
+  <delete id="deleteById" parameterType="Stock">
+	DELETE FROM `stock` WHERE stock_name=#{m_name}
+  </delete>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.SupplierMapper">
+  <select id="selectAll" resultType="Supplier">
+    select * from `supplier` where 1=1
+    <if test="supplier_id != null">
+    	and supplier_id = #{supplier_id}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="Supplier">
+    select count(*) from `supplier` where 1=1
+    <if test="supplier_id != null">
+    	and supplier_id = #{supplier_id}
+    </if>
+  </select>
+  <insert id="addUser" parameterType="Supplier">
+  	insert into `supplier`
+  		(supplier_id,supplier_name,supplier_materiel,supplier_type,supplier_linkman,supplier_phone,supplier_contact_another,supplier_address)
+  	 values 
+  	 	(#{supplier_id},#{supplier_name},#{supplier_materiel},#{supplier_type},#{supplier_linkman},#{supplier_phone},#{supplier_contact_another},#{supplier_address})
+  </insert>
+  <update id="updateUser" parameterType="Supplier" >
+	update `supplier` set 
+		supplier_name=#{supplier_name},supplier_materiel=#{supplier_materiel},supplier_type=#{supplier_type},
+		supplier_linkman=#{supplier_linkman},supplier_phone=#{supplier_phone},supplier_contact_another=#{supplier_contact_another},
+		supplier_address=#{supplier_address}
+	 where supplier_id=#{supplier_id}
+  </update>
+  <delete id="deleteById" parameterType="Supplier">
+	DELETE FROM `supplier` WHERE supplier_id=#{id}
+  </delete>
+</mapper>

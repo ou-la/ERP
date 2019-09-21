@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+        
+    <context:property-placeholder location="classpath:mybatis/db.properties" />
+   
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<!-- 驱动地址 -->
+		<property name="driverClassName" value="${driver}"></property>
+		<!-- 数据库地址 -->
+		<property name="url" value="${url}"></property>
+		<!-- 数据库用户名和密码 -->
+		<property name="username" value="${user}"></property>
+		<property name="password" value="${password}"></property>
+        <!-- 同一时刻可分配最大连接数 -->
+        <property name="maxTotal" value="${maxTotal}"></property>
+        <!-- 连接池最大最大空闲数 -->
+        <property name="maxIdle" value="${maxIdle}"></property>
+        <!-- 定义初始连接数  -->
+        <property name="initialSize" value="${initialSize}"></property>
+	</bean>
+    
+    <!-- 配置MyBatis的工厂 -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 注入数据库连接池 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 引入myBatis配置文件 -->
+		<property name="configLocation"
+					 value="classpath:mybatis/mybatis-config.xml"></property>
+        
+        <property name="mapperLocations">
+        	<list>
+        		<value>classpath:mybatis/**/*Mapper.xml</value>
+        	</list>
+        </property>
+	</bean>
+	
+	<!-- 注册配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	 <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+	<!-- 扫描mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	    <property name="basePackage" value="com.mapper" /><!-- 多个使用逗号分隔 -->
+	</bean>
+
+ 	<!-- 配置事务传播特性 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="create*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="find*" propagation="SUPPORTS"
+            								 read-only="true"/>
+            <tx:method name="select*" propagation="SUPPORTS"
+            								 read-only="true"/>
+            <tx:method name="get*" propagation="SUPPORTS"
+            								 read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- 切面,配置哪些类的哪些方法参与事务 -->
+    <aop:config>
+        <aop:advisor advice-ref="txAdvice"
+        	 pointcut="execution(* com.service.*.*(..))" />
+    </aop:config>
+	
+	<!-- 配置扫描@Service注解 -->
+	<context:component-scan base-package="com">
+		<!-- 排除Controller注解 -->
+		<context:exclude-filter type="annotation"
+			 expression="org.springframework.stereotype.Controller"></context:exclude-filter>
+	</context:component-scan>
+	
+</beans>

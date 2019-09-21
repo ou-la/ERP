@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.StaffMapper">
+  <select id="selectAll" resultType="Staff">
+    select * from `Staff` where 1=1
+    <if test="staff_name != null">
+    	and staff_name = #{staff_name}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="Staff">
+    select count(*) from `Staff` where 1=1
+    <if test="staff_name != null">
+    	and staff_name = #{staff_name}
+    </if>
+  </select>
+  <select id="countLogin" resultType="int" parameterType="Staff">
+    select count(*) from `Staff` where staff_name = #{staff_name}
+  </select>
+  <insert id="addUser" parameterType="Staff">
+  	insert into `Staff`
+  		(staff_name,staff_password,staff_sex,staff_age,staff_phone,staff_email,staff_post,staff_wages,staff_working_years,staff_status)
+  	 values 
+  	 	(#{staff_name },#{staff_password },#{staff_sex },#{staff_age },#{staff_phone },#{staff_email },#{staff_post },#{staff_wages },#{staff_working_years },#{staff_status })
+  </insert>
+  <update id="updateUser" parameterType="Staff" >
+	update `Staff`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="staff_password != null">staff_password=#{staff_password},</if>
+		<if test="staff_sex != null">staff_sex=#{staff_sex},</if>
+		<if test="staff_age != null">staff_age=#{staff_age},</if>
+		<if test="staff_phone != null">staff_phone=#{staff_phone},</if>
+		<if test="staff_email != null">staff_email=#{staff_email},</if>
+		<if test="staff_post != null">staff_post=#{staff_post},</if>
+		<if test="staff_wages != null">staff_wages=#{staff_wages},</if>
+		<if test="staff_working_years != null">staff_working_years=#{staff_working_years},</if>
+		<if test="staff_status != null">staff_status=#{staff_status},</if>
+	</trim>
+	 where staff_name=#{staff_name}
+  </update>
+  <delete id="deleteById" parameterType="Staff">
+	DELETE FROM `Staff` WHERE staff_name=#{staff_name}
+  </delete>
+</mapper>

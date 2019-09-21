@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.SaleMapper">
+  <select id="selectAll" resultType="Sale">
+    select * from `sale` where 1=1
+    <if test="bill_id != null">
+    	and bill_id = #{bill_id}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="Sale">
+    select count(*) from `sale` where 1=1
+    <if test="bill_id != null">
+    	and bill_id = #{bill_id}
+    </if>
+  </select>
+  <insert id="addUser" parameterType="Sale">
+  	insert into `sale`
+  		(bill_id,bill_type,business_name,business_linkman,business_phone,business_contact_another,business_address,sale_pro,sale_pro_number,sale_pro_uprice,sale_pro_price,sale_price,sale_staff,sale_date)
+  	 values 
+  	 	(#{bill_id },#{bill_type },#{business_name },#{business_linkman },#{business_phone },#{business_contact_another },#{business_address },#{sale_pro },#{sale_pro_number },#{sale_pro_uprice },#{sale_pro_price },#{sale_price },#{sale_staff },#{sale_date })
+  </insert>
+  <update id="updateUser" parameterType="Sale" >
+	update `sale`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="bill_type != null">bill_type=#{bill_type},</if>
+		<if test="business_name != null">business_name=#{business_name},</if>
+		<if test="business_linkman != null">business_linkman=#{business_linkman},</if>
+		<if test="business_phone != null">business_phone=#{business_phone},</if>
+		<if test="business_contact_another != null">business_contact_another=#{business_contact_another},</if>
+		<if test="business_address != null">business_address=#{business_address},</if>
+		<if test="sale_pro != null">sale_pro=#{sale_pro},</if>
+		<if test="sale_pro_number != null">sale_pro_number=#{sale_pro_number},</if>
+		<if test="sale_pro_uprice != null">sale_pro_uprice=#{sale_pro_uprice},</if>
+		<if test="sale_pro_price != null">sale_pro_price=#{sale_pro_price},</if>
+		<if test="sale_price != null">sale_price=#{sale_price},</if>
+		<if test="sale_staff != null">sale_staff=#{sale_staff},</if>
+		<if test="sale_date != null">sale_date=#{sale_date},</if>
+	</trim>
+	 where bill_id=#{bill_id}
+  </update>
+  <delete id="deleteById" parameterType="Sale">
+	DELETE FROM `sale` WHERE bill_id=#{id}
+  </delete>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.MaterielMapper">
+  <select id="selectAll" resultType="Materiel">
+    select * from `materiel` where 1=1
+    <if test="materiel_id != null">
+    	and materiel_id = #{materiel_id}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="Materiel">
+    select count(*) from `materiel` where 1=1
+    <if test="materiel_id != null">
+    	and materiel_id = #{materiel_id}
+    </if>
+  </select>
+  <insert id="addUser" parameterType="Materiel">
+  	insert into `materiel`
+  		(materiel_id,materie_name,materie_type,materie_specifications,materie_describe,materie_price,materie_company,materie_number,materie_supplier,materie_purchase_date)
+  	 values 
+  	 	(#{materiel_id },#{materie_name },#{materie_type },#{materie_specifications },#{materie_describe },#{materie_price },#{materie_company },#{materie_number },#{materie_supplier },#{materie_purchase_date })
+  </insert>
+  <update id="updateUser" parameterType="Materiel" >
+	update `materiel`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="materie_name != null">materie_name=#{materie_name},</if>
+		<if test="materie_type != null">materie_type=#{materie_type},</if>
+		<if test="materie_specifications != null">materie_specifications=#{materie_specifications},</if>
+		<if test="materie_describe != null">materie_describe=#{materie_describe},</if>
+		<if test="materie_price != null">materie_price=#{materie_price},</if>
+		<if test="materie_company != null">materie_company=#{materie_company},</if>
+		<if test="materie_number != null">materie_number=#{materie_number},</if>
+		<if test="materie_supplier != null">materie_supplier=#{materie_supplier},</if>
+		<if test="materie_purchase_date != null">materie_purchase_date=#{materie_purchase_date},</if>
+	</trim>
+	 where materiel_id=#{materiel_id}
+  </update>
+  <update id="updateInventory" parameterType="Materiel" >
+	update `materiel` set materie_number=#{materie_number}
+	 where materie_name=#{materie_name}
+  </update>
+  <update id="updateExport" parameterType="Materiel" >
+	update `materiel` set materie_number=materie_number-#{materie_number}
+	 where materie_name=#{materie_name}
+  </update>
+  <delete id="deleteById" parameterType="Materiel">
+	DELETE FROM `materiel` WHERE materiel_id=#{id}
+  </delete>
+</mapper>

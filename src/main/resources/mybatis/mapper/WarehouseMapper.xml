@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.WarehouseMapper">
+  <select id="selectAll" resultType="Warehouse">
+    select * from `warehouse` where 1=1
+    <if test="warehouse_id != null">
+    	and warehouse_id = #{warehouse_id}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="Warehouse">
+    select count(*) from `warehouse` where 1=1
+    <if test="warehouse_id != null">
+    	and warehouse_id = #{warehouse_id}
+    </if>
+  </select>
+  <insert id="addUser" parameterType="Warehouse">
+  	insert into `Warehouse`
+  		(Warehouse_id,warehouse_name,warehouse_address,warehouse_describe,warehouse_man,warehouse_status)
+  	 values 
+  	 	(#{warehouse_id },#{warehouse_name },#{warehouse_address },#{warehouse_describe },#{warehouse_man },#{warehouse_status })
+  </insert>
+  <update id="updateUser" parameterType="Warehouse" >
+	update `warehouse`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="warehouse_name != null">warehouse_name=#{warehouse_name},</if>
+		<if test="warehouse_address != null">warehouse_address=#{warehouse_address},</if>
+		<if test="warehouse_describe != null">warehouse_describe=#{warehouse_describe},</if>
+		<if test="warehouse_man != null">warehouse_man=#{warehouse_man},</if>
+		<if test="warehouse_status != null">warehouse_status=#{warehouse_status},</if>
+	</trim>
+	 where warehouse_id=#{warehouse_id}
+  </update>
+  <delete id="deleteById" parameterType="Warehouse">
+	DELETE FROM `Warehouse` WHERE warehouse_id=#{id}
+  </delete>
+</mapper>

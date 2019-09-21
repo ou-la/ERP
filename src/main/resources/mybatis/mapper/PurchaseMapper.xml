@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.PurchaseMapper">
+  <select id="selectAll" resultType="Purchase">
+    select * from `purchase` where 1=1
+    <if test="bill_id != null">
+    	and bill_id = #{bill_id}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="Purchase">
+    select count(*) from `purchase` where 1=1
+    <if test="bill_id != null">
+    	and bill_id = #{bill_id}
+    </if>
+  </select>
+  <insert id="addUser" parameterType="Purchase">
+  	insert into `purchase`
+  		(bill_id,bill_type,purchase_commodity,purchase_supplier,purchase_commodity_uprice,purchase_commodity_number,purchase_commodity_price,purchase_price,purchase_staff,purchase_date,purchase_status,purchase_img)
+  	 values 
+  	 	(#{bill_id },#{bill_type },#{purchase_commodity },#{purchase_supplier },#{purchase_commodity_uprice },#{purchase_commodity_number },#{purchase_commodity_price },#{purchase_price },#{purchase_staff },#{purchase_date },#{purchase_status },#{purchase_img })
+  </insert>
+  <update id="updateUser" parameterType="Purchase" >
+	update `purchase`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="bill_type != null">bill_type=#{bill_type},</if>
+		<if test="purchase_commodity != null">purchase_commodity=#{purchase_commodity},</if>
+		<if test="purchase_supplier != null">purchase_supplier=#{purchase_supplier},</if>
+		<if test="purchase_commodity_uprice != null">purchase_commodity_uprice=#{purchase_commodity_uprice},</if>
+		<if test="purchase_commodity_number != null">purchase_commodity_number=#{purchase_commodity_number},</if>
+		<if test="purchase_commodity_price != null">purchase_commodity_price=#{purchase_commodity_price},</if>
+		<if test="purchase_price != null">purchase_price=#{purchase_price},</if>
+		<if test="purchase_staff != null">purchase_staff=#{purchase_staff},</if>
+		<if test="purchase_date != null">purchase_date=#{purchase_date},</if>
+		<if test="purchase_status != null">purchase_status=#{purchase_status},</if>
+		<if test="purchase_img != null">purchase_img=#{purchase_img},</if>
+	</trim>
+	 where bill_id=#{bill_id}
+  </update>
+  <update id="updateMateriel" parameterType="Purchase" >
+	update `materiel`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="purchase_commodity_number != null">materie_number=materie_number+#{purchase_commodity_number}</if>
+	</trim>
+	 where materie_name=#{purchase_commodity}
+  </update>
+  <update id="updateStock" parameterType="Purchase" >
+	update `stock`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="purchase_commodity_number != null">stock_number=stock_number+#{purchase_commodity_number}</if>
+	</trim>
+	 where stock_name=#{purchase_commodity}
+  </update>
+  <delete id="deleteById" parameterType="Purchase">
+	DELETE FROM `purchase` WHERE bill_id=#{id}
+  </delete>
+  <select id="selectCommodity" resultType="Purchase">
+    select m.materiel_id,m.materie_name,m.materie_specifications,m.materie_price,m.materie_supplier,m.materie_type from `purchase` p RIGHT join `materiel` m ON p.bill_id = m.materiel_id
+  </select>
+</mapper>

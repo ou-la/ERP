@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.BusinessMapper">
+  <select id="selectAll" resultType="Business">
+    select * from `business` where 1=1
+    <if test="business_id != null">
+    	and business_id = #{business_id}
+    </if>
+    <if test="limits != null">
+    	limit #{offset},#{limit}
+    </if>
+  </select>
+  <select id="count" resultType="int" parameterType="Business">
+    select count(*) from `business` where 1=1
+    <if test="business_id != null">
+    	and business_id = #{business_id}
+    </if>
+  </select>
+  <insert id="addUser" parameterType="Business">
+  	insert into `business`
+  		(business_id,business_name,business_linkman,business_phone,business_contact_another,business_address,business_type)
+  	 values 
+  	 	(#{business_id },#{business_name },#{business_linkman },#{business_phone },#{business_contact_another },#{business_address },#{business_type })
+  </insert>
+  <update id="updateUser" parameterType="Business" >
+	update `business`
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="business_name != null">business_name=#{business_name},</if>
+		<if test="business_linkman != null">business_linkman=#{business_linkman},</if>
+		<if test="business_phone != null">business_phone=#{business_phone},</if>
+		<if test="business_contact_another != null">business_contact_another=#{business_contact_another},</if>
+		<if test="business_address != null">business_address=#{business_address},</if>
+		<if test="business_type != null">business_type=#{business_type},</if>
+	</trim>
+	 where business_id=#{business_id}
+  </update>
+  <delete id="deleteById" parameterType="Business">
+	DELETE FROM `business` WHERE business_id=#{id}
+  </delete>
+</mapper>
